@@ -194,6 +194,10 @@ struct ContentView: View {
     @State private var cardOffset: CGFloat = 0
     @State private var cardOpacity: Double = 1
     @State private var heartBounce = false
+    
+    @State private var dealOffset: CGSize = .zero
+    @State private var dealRotation: Double = 0
+    @State private var dealOpacity: Double = 1
 
     // Background color components — used to match the fade overlay exactly
     private let bgR = 0.06
@@ -324,8 +328,9 @@ struct ContentView: View {
                         }
                     }
                 )
-                .offset(y: cardOffset)
-                .opacity(cardOpacity)
+                .offset(dealOffset)
+                .rotationEffect(.degrees(dealRotation))
+                .opacity(dealOpacity)
                 .padding(.horizontal, 20)
 
                 Spacer()
@@ -380,38 +385,44 @@ struct ContentView: View {
 
     // MARK: - Actions
 
+
     func nextJoke() {
         guard !isAnimating else { return }
         isAnimating = true
 
-        withAnimation(.easeInOut(duration: 0.2)) {
-            cardOffset = -20
-            cardOpacity = 0
+        // Fly current card off to the top-left
+        withAnimation(.easeIn(duration: 0.25)) {
+            dealOffset = CGSize(width: -300, height: -100)
+            dealRotation = -15
+            dealOpacity = 0
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             let pool = JokeProvider.jokes(for: selectedCategory, likedIDs: likedJokes)
-            if pool.isEmpty {
-                selectedCategory = .all
-                currentJoke = JokeProvider.jokes.filter { $0.id != currentJoke.id }.randomElement()
-                    ?? JokeProvider.jokes.randomElement()!
-            } else {
-                currentJoke = pool.filter { $0.id != currentJoke.id }.randomElement()
-                    ?? pool.randomElement()!
-            }
+            currentJoke = pool.filter { $0.id != currentJoke.id }.randomElement() ?? pool.randomElement()!
             showPunchline = false
             jokeCount += 1
-            cardOffset = 30
 
-            withAnimation(.spring(response: 0.45, dampingFraction: 0.72)) {
-                cardOffset = 0
-                cardOpacity = 1
+            // Position new card off-screen bottom-right, rotated
+            dealOffset = CGSize(width: 300, height: 200)
+            dealRotation = 20
+            dealOpacity = 0
+
+            // Deal it in with a satisfying arc
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+                dealOffset = .zero
+                dealRotation = 0
+                dealOpacity = 1
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 isAnimating = false
             }
         }
     }
+
+
+    // Apply to JokeCard in body:
 
     func loadJokeForCategory(_ category: JokeCategory) {
         let pool = JokeProvider.jokes(for: category, likedIDs: likedJokes)
