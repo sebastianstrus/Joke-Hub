@@ -311,10 +311,25 @@ struct ContentView: View {
     func shareJoke() {
         let text = "\(currentJoke.setup)\n\n\(currentJoke.punchline)\n\nShared from Joke Hub 😂"
         let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
-        UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .first?.windows.first?
-            .rootViewController?.present(av, animated: true)
+        
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first,
+           let rootVC = window.rootViewController {
+            
+            // iPad requires a source for the popover
+            if let popover = av.popoverPresentationController {
+                popover.sourceView = window
+                popover.sourceRect = CGRect(
+                    x: window.bounds.midX,
+                    y: window.bounds.midY,
+                    width: 0,
+                    height: 0
+                )
+                popover.permittedArrowDirections = []
+            }
+            
+            rootVC.present(av, animated: true)
+        }
     }
 }
 
