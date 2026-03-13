@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-
-
-// MARK: - Joke Provider
-
-
 // MARK: - Content View
 struct ContentView: View {
     @State private var currentJoke: Joke = JokeProvider.jokes.randomElement()!
@@ -314,7 +309,7 @@ struct ContentView: View {
     }
 
     func shareJoke() {
-        let text = "\(currentJoke.setup)\n\n\(currentJoke.punchline)\n\nShared from Daily Laughs 😂"
+        let text = "\(currentJoke.setup)\n\n\(currentJoke.punchline)\n\nShared from Joke Hub 😂"
         let av = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
