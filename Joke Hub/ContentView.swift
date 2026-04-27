@@ -223,6 +223,13 @@ struct ContentView: View {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             let pool = JokeProvider.jokes(for: selectedCategory, likedIDs: likedJokes)
+            guard !pool.isEmpty else {
+                // No jokes available, switch to all category
+                withAnimation(.spring(response: 0.3)) { selectedCategory = .all }
+                loadJokeForCategory(.all)
+                isAnimating = false
+                return
+            }
             currentJoke = pool.filter { $0.id != currentJoke.id }.randomElement() ?? pool.randomElement()!
             showPunchline = false
             jokeCount += 1

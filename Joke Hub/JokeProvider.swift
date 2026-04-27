@@ -1008,6 +1008,8 @@ struct JokeProvider {
         Joke(setup: "What was the most popular drink in the 1980s?", punchline: "New Coke! 🥤", category: .history),
 
         // Dark
+        Joke(setup: "I asked my wife why she doesn't tell me when she's about to orgasm, she said:", punchline: "I don't like ringing you while you're at work", category: .dark),
+        Joke(setup: "I just got back from the doctor for a check up, he diagnosed me with paranoid dyslexia.", punchline: "I think I'm following someone.", category: .dark),
         Joke(setup: "Why don't graveyards ever get crowded?", punchline: "People are dying to get in! ⚰️", category: .dark),
         Joke(setup: "I have a lot of jokes about unemployed people...", punchline: "None of them work! 💼", category: .dark),
         Joke(setup: "My wife told me I had to stop acting like a flamingo.", punchline: "I had to put my foot down! 🦩", category: .dark),
